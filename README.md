@@ -1,36 +1,56 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Learn Punjabi
 
-## Getting Started
+A beginner's course in **Gurmukhi** and **spoken Punjabi**, built around the chain most
+resources break: letter → sound → word → meaning → sentence → conversation.
 
-First, run the development server:
+Live at [punjabi.mohijitsingh.com](https://punjabi.mohijitsingh.com).
+
+## Running it
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev      # http://localhost:3000
+npm run build    # static export into out/
+npm run check    # types, stray characters, transliteration, content
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Node 22 (see `.node-version`).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## How it is put together
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Directory | What lives there |
+|---|---|
+| `app/` | Routes. Server Components by default; the lesson player is the client boundary. |
+| `components/` | UI only. `exercise/` is one component per exercise type, all sharing one contract. |
+| `content/` | Every Punjabi fact in the app, as typed data validated by Zod at module load. |
+| `lib/` | Transliteration, audio, storage, progress, SRS and exercise checking. |
+| `scripts/` | The checks behind `npm run check`. |
 
-## Learn More
+Two rules hold the thing together:
 
-To learn more about Next.js, take a look at the following resources:
+1. **No lesson content inside components.** A lesson is a data file listing steps; the
+   player renders any lesson without bespoke code. Fixing a Punjabi mistake is a one-line
+   edit in `content/`, never a change to UI.
+2. **Nothing in `content/` imports React**, so the same data can back a future mobile app.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Learner data — progress, settings, saved words — is local-first. It lives in the browser's
+own storage behind a `StorageAdapter`; there are no accounts and no server.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Audio uses the Web Speech API with a `pa-IN` voice. Every content entry also carries an
+`audio` field, so recorded pronunciation can replace the synthesised voice later without
+touching a single component.
 
-## Deploy on Vercel
+## Correcting the Punjabi
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Content accuracy matters more here than content volume. `content/SOURCES.md` records the
+references used and the facts beginner resources commonly get wrong. `npm run check`
+cross-checks hand-written romanisation against the transliteration engine, verifies that
+every lesson reference resolves, and fails the build on a broken one.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+If you spot an error, the fix is in `content/` — open the relevant file, correct the entry,
+and run `npm run check`.
+
+## Deploying
+
+See [DEPLOY.md](DEPLOY.md).

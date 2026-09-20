@@ -1,26 +1,173 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ---------------------------------------------------------------
+   Design tokens.
+   Light is the default. Dark applies from the OS preference unless
+   the user explicitly chose light, and always when they chose dark.
+   --------------------------------------------------------------- */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+:root {
+  --bg: #fcfcfb;
+  --surface: #ffffff;
+  --surface-2: #f4f4f2;
+  --border: #e4e4e0;
+  --border-strong: #cfcfc9;
+
+  --text: #16181c;
+  --text-muted: #5f636b;
+  --text-faint: #8b8f97;
+
+  --accent: #c0562a;
+  --accent-hover: #a8471f;
+  --accent-soft: #fbeee7;
+  --accent-text: #ffffff;
+
+  --correct: #2f7a4d;
+  --correct-soft: #e9f5ed;
+  --incorrect: #b3392f;
+  --incorrect-soft: #fbece9;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not([data-theme="light"]) {
+    --bg: #101114;
+    --surface: #17191d;
+    --surface-2: #1f2228;
+    --border: #2a2e35;
+    --border-strong: #3b414a;
+
+    --text: #eceef1;
+    --text-muted: #a2a8b2;
+    --text-faint: #767d89;
+
+    --accent: #e8825a;
+    --accent-hover: #f2946e;
+    --accent-soft: #2c1a12;
+    --accent-text: #16100c;
+
+    --correct: #63b884;
+    --correct-soft: #16241c;
+    --incorrect: #e3796c;
+    --incorrect-soft: #2a1715;
   }
 }
 
+:root[data-theme="dark"] {
+  --bg: #101114;
+  --surface: #17191d;
+  --surface-2: #1f2228;
+  --border: #2a2e35;
+  --border-strong: #3b414a;
+
+  --text: #eceef1;
+  --text-muted: #a2a8b2;
+  --text-faint: #767d89;
+
+  --accent: #e8825a;
+  --accent-hover: #f2946e;
+  --accent-soft: #2c1a12;
+  --accent-text: #16100c;
+
+  --correct: #63b884;
+  --correct-soft: #16241c;
+  --incorrect: #e3796c;
+  --incorrect-soft: #2a1715;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-text-faint: var(--text-faint);
+
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-text: var(--accent-text);
+
+  --color-correct: var(--correct);
+  --color-correct-soft: var(--correct-soft);
+  --color-incorrect: var(--incorrect);
+  --color-incorrect-soft: var(--incorrect-soft);
+
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-gurmukhi: var(--font-gurmukhi), "Noto Sans Gurmukhi", "Raavi", sans-serif;
+
+  --radius-card: 0.875rem;
+}
+
+* {
+  border-color: var(--border);
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Gurmukhi is always the visually dominant script. These sizes are
+   deliberately larger than their Latin counterparts, with extra line
+   height so vowel signs above and below the line are never clipped. */
+
+.pa {
+  font-family: var(--font-gurmukhi), "Noto Sans Gurmukhi", "Raavi", sans-serif;
+  line-height: 1.75;
+}
+
+.pa-hero {
+  font-family: var(--font-gurmukhi), "Noto Sans Gurmukhi", "Raavi", sans-serif;
+  font-size: clamp(3.5rem, 14vw, 7rem);
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+}
+
+.pa-xl {
+  font-family: var(--font-gurmukhi), "Noto Sans Gurmukhi", "Raavi", sans-serif;
+  font-size: clamp(2.25rem, 8vw, 3.25rem);
+  line-height: 1.6;
+}
+
+.pa-lg {
+  font-family: var(--font-gurmukhi), "Noto Sans Gurmukhi", "Raavi", sans-serif;
+  font-size: clamp(1.5rem, 5vw, 2rem);
+  line-height: 1.7;
+}
+
+.pa-md {
+  font-family: var(--font-gurmukhi), "Noto Sans Gurmukhi", "Raavi", sans-serif;
+  font-size: 1.25rem;
+  line-height: 1.8;
+}
+
+/* Roman transliteration: always secondary to the Gurmukhi above it. */
+.roman {
+  font-variant-ligatures: none;
+  color: var(--text-muted);
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
