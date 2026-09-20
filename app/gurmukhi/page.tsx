@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { AudioButton } from "@/components/ui/AudioButton";
-import { Card, SectionHeading } from "@/components/ui/Card";
+import { Card, CardLink, SectionHeading } from "@/components/ui/Card";
 import { GROUP_LABELS, LetterTile } from "@/components/gurmukhi/LetterTile";
 import { contentCounts, lettersByGroup, symbols, vowels } from "@/content";
 
@@ -31,7 +31,55 @@ export default function GurmukhiPage() {
       </header>
 
       <section>
-        <SectionHeading hint={`${contentCounts.letters} letters`}>The letters</SectionHeading>
+        <SectionHeading hint="start here">Before the letters</SectionHeading>
+        <CardLink href="/gurmukhi/script">
+          <h3 className="font-medium">How the script works</h3>
+          <p className="mt-1 max-w-prose text-sm text-text-muted">
+            {contentCounts.scriptNotes} short ideas that make the letters far easier: the
+            line along the top, the vowel that is already inside every consonant, where the
+            signs hang, and why the small marks change the word.
+          </p>
+          <p className="mt-3 text-sm text-text-faint">Nothing to memorise</p>
+        </CardLink>
+      </section>
+
+      <section>
+        <SectionHeading hint="the point of all this">Reading</SectionHeading>
+        <CardLink href="/gurmukhi/reading">
+          <h3 className="font-medium">Reading trainer</h3>
+          <p className="mt-1 max-w-prose text-sm text-text-muted">
+            Five levels, letters through to whole sentences. Knowing the letters and
+            reading Punjabi are two different skills; this is where the second one is
+            practised, with the transliteration switched off when you are ready.
+          </p>
+          <p className="mt-3 text-sm text-text-faint">
+            {contentCounts.readingItems} items across {contentCounts.readingLevels} levels
+          </p>
+        </CardLink>
+      </section>
+
+      <section>
+        <SectionHeading hint="a row at a sitting">Learning them</SectionHeading>
+        <CardLink href="/gurmukhi/letters">
+          <h3 className="font-medium">Learn the letters</h3>
+          <p className="mt-1 max-w-prose text-sm text-text-muted">
+            The same letters, taught a row at a time: what the row has in common, the
+            sound, a word it appears in, stroke order and somewhere to write it.
+          </p>
+        </CardLink>
+        <CardLink href="/gurmukhi/sounds" className="mt-3">
+          <h3 className="font-medium">Sounds that get confused</h3>
+          <p className="mt-1 max-w-prose text-sm text-text-muted">
+            ਕ against ਖ, ਤ against ਟ, ਰ against ੜ — the contrasts English does not make,
+            with where the tongue goes for each one.
+          </p>
+        </CardLink>
+      </section>
+
+      <section>
+        <SectionHeading hint={`${contentCounts.letters} letters — reference`}>
+          The letters
+        </SectionHeading>
         <div className="space-y-8">
           {lettersByGroup().map(({ group, letters }) => (
             <div key={group}>

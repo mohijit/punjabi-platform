@@ -1,5 +1,12 @@
 import type { Word, WordCategory } from "@/content/schema";
 import { greetings } from "./greetings";
+import { pronouns } from "./pronouns";
+import { numbers } from "./numbers";
+import { family } from "./family";
+import { food } from "./food";
+import { verbs } from "./verbs";
+import { questions } from "./questions";
+import { everyday } from "./everyday";
 
 /**
  * The vocabulary registry. One file per category, gathered here.
@@ -10,7 +17,16 @@ import { greetings } from "./greetings";
  * they then have to unlearn.
  */
 
-export const words: Word[] = [...greetings];
+export const words: Word[] = [
+  ...greetings,
+  ...pronouns,
+  ...numbers,
+  ...family,
+  ...food,
+  ...verbs,
+  ...questions,
+  ...everyday,
+];
 
 export const wordsByGurmukhi = new Map(words.map((word) => [word.gurmukhi, word]));
 

@@ -113,6 +113,35 @@ export const symbolSchema = z.object({
 });
 export type GurmukhiSymbol = z.infer<typeof symbolSchema>;
 
+/**
+ * One idea about how the script works, before any letter is taught.
+ *
+ * These are the things that are obvious to anyone who reads Gurmukhi and
+ * invisible to everyone who does not: that a bare consonant already carries a
+ * vowel, that sihari is written before the letter it follows, that the line
+ * along the top is what makes a word a word. Each one is a heading, a couple of
+ * sentences and a demonstration made of real Punjabi.
+ */
+export const scriptNoteSchema = z.object({
+  id: z.string().min(1),
+  title: z.string().min(1),
+  /** The idea in one sentence, shown before the explanation. */
+  summary: z.string().min(1),
+  body: z.array(z.string().min(1)).min(1),
+  /** Gurmukhi the point can be seen in, each piece captioned. */
+  demo: z
+    .array(
+      z.object({
+        gurmukhi: gurmukhiText,
+        roman: romanText,
+        caption: z.string().min(1),
+      }),
+    )
+    .default([]),
+  order: z.number().int().nonnegative(),
+});
+export type ScriptNote = z.infer<typeof scriptNoteSchema>;
+
 /** A set of letters that learners confuse, taught and drilled together. */
 export const soundGroupSchema = z.object({
   id: z.string().min(1),

@@ -23,6 +23,14 @@ export {
 export { vowels, vowelsBySign, secondSeries } from "./gurmukhi/vowels";
 export { symbols, symbolsById } from "./gurmukhi/symbols";
 export { soundGroups } from "./gurmukhi/soundGroups";
+export { scriptNotes, getScriptNote } from "./gurmukhi/script";
+export {
+  readingLevels,
+  getReadingLevel,
+  type ReadingLevel,
+  type ReadingLevelId,
+  type ReadingItem,
+} from "./gurmukhi/reading";
 
 export {
   words,
@@ -47,9 +55,11 @@ import { letters, painti, extraLetters } from "./gurmukhi/letters";
 import { vowels } from "./gurmukhi/vowels";
 import { symbols } from "./gurmukhi/symbols";
 import { soundGroups } from "./gurmukhi/soundGroups";
+import { scriptNotes } from "./gurmukhi/script";
 import { words } from "./vocabulary";
 import { sentences } from "./sentences";
 import { lessons } from "./lessons";
+import { readingLevels } from "./gurmukhi/reading";
 
 /**
  * Counts the UI can show without re-deriving them, and which double as a
@@ -63,9 +73,12 @@ export const contentCounts = {
   vowels: vowels.length,
   symbols: symbols.length,
   soundGroups: soundGroups.length,
+  scriptNotes: scriptNotes.length,
   words: words.length,
   sentences: sentences.length,
   lessons: lessons.length,
+  readingLevels: readingLevels.length,
+  readingItems: readingLevels.reduce((total, level) => total + level.items.length, 0),
 } as const;
 
 /**

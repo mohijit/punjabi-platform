@@ -11,9 +11,11 @@ import { letters, painti, extraLetters } from "@/content/gurmukhi/letters";
 import { vowels } from "@/content/gurmukhi/vowels";
 import { symbols } from "@/content/gurmukhi/symbols";
 import { soundGroups } from "@/content/gurmukhi/soundGroups";
+import { scriptNotes } from "@/content/gurmukhi/script";
 import { words } from "@/content/vocabulary";
 import { sentences } from "@/content/sentences";
 import { lessons } from "@/content/lessons";
+import { readingLevels } from "@/content/gurmukhi/reading";
 import { toRoman } from "@/lib/transliteration";
 
 const problems = [];
@@ -236,6 +238,43 @@ for (const lesson of lessons) {
   }
 }
 
+/* ---------------------------- reading trainer ---------------------------- */
+
+/**
+ * The reading levels are generated from the content above rather than written
+ * by hand, so what is checked here is that the generation held: every item is
+ * answerable, and every level actually has something in it.
+ */
+const readingIds = new Set();
+for (const level of readingLevels) {
+  if (level.items.length === 0) problem(`Reading level ${level.id} is empty`);
+  for (const item of level.items) {
+    if (readingIds.has(item.id)) problem(`Duplicate reading item id ${item.id}`);
+    readingIds.add(item.id);
+    if (item.options.length !== 4) {
+      problem(`Reading item ${item.id}: ${item.options.length} options, expected 4`);
+    }
+    if (new Set(item.options).size !== item.options.length) {
+      problem(`Reading item ${item.id}: the same option appears twice`);
+    }
+    if (!item.options.includes(item.answer)) {
+      problem(`Reading item ${item.id}: answer "${item.answer}" is not one of the options`);
+    }
+    if (item.options.some((option) => option.trim() === "")) {
+      problem(`Reading item ${item.id}: has a blank option`);
+    }
+    // The clusters are what the reveal shows chunk by chunk, so they must add
+    // back up to the prompt. Compared NFC, because a nukta letter such as ਜ਼ is
+    // one character composed and two decomposed, and spaces and the ending
+    // danda are not part of any chunk.
+    const strip = (value) => value.normalize("NFC").replace(/[\s।?!.]/gu, "");
+    if (strip(item.clusters.join("")) !== strip(item.text)) {
+      problem(`Reading item ${item.id}: clusters do not rebuild the text`);
+    }
+    checkTracks(`Reading item ${item.id}`, item);
+  }
+}
+
 /* ------------------- romanisation agreement (advisory) ------------------- */
 
 /**
@@ -261,6 +300,11 @@ for (const symbol of symbols) {
     checkRoman(`symbol ${symbol.id} example`, example.gurmukhi, example.roman);
   }
 }
+for (const note of scriptNotes) {
+  for (const demo of note.demo) {
+    checkRoman(`script note ${note.id} demo`, demo.gurmukhi, demo.roman);
+  }
+}
 for (const word of words) {
   checkRoman(`word ${word.gurmukhi}`, word.gurmukhi, word.roman);
 }
@@ -276,9 +320,11 @@ console.log(`letters        ${letters.length}  (${painti.length} painti + ${extr
 console.log(`vowels         ${vowels.length}`);
 console.log(`symbols        ${symbols.length}`);
 console.log(`sound groups   ${soundGroups.length}`);
+console.log(`script notes   ${scriptNotes.length}`);
 console.log(`words          ${words.length}`);
 console.log(`sentences      ${sentences.length}`);
 console.log(`lessons        ${lessons.length}`);
+console.log(`reading items  ${readingIds.size}  (across ${readingLevels.length} levels)`);
 
 const recorded = [
   ...letters.map((l) => l.audio),

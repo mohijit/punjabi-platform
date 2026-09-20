@@ -26,6 +26,10 @@
   --correct-soft: #e9f5ed;
   --incorrect: #b3392f;
   --incorrect-soft: #fbece9;
+
+  /* The tracing surface: a faint letter to follow, and the learner's own ink. */
+  --trace-guide: #dedede;
+  --trace-ink: #16181c;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -49,6 +53,9 @@
     --correct-soft: #16241c;
     --incorrect: #e3796c;
     --incorrect-soft: #2a1715;
+
+    --trace-guide: #333840;
+    --trace-ink: #eceef1;
   }
 }
 
@@ -72,6 +79,9 @@
   --correct-soft: #16241c;
   --incorrect: #e3796c;
   --incorrect-soft: #2a1715;
+
+  --trace-guide: #333840;
+  --trace-ink: #eceef1;
 }
 
 @theme inline {

@@ -17,6 +17,27 @@ npm run lint
 
 Node 22 (see `.node-version`).
 
+## The Gurmukhi section
+
+`/gurmukhi` is the script half of the course, and it is built in the order the skills
+actually arrive:
+
+- **How the script works** (`/gurmukhi/script`) — seven ideas before any letter is
+  memorised, including the one that unlocks reading: a bare consonant already carries a
+  vowel, so ਘਰ is *ghar* with nothing written.
+- **Learn the letters** (`/gurmukhi/letters`) — one traditional row at a time, never a
+  41-cell wall. Each row is a place in the mouth, which is why that order exists. Stroke
+  order in plain language, and a tracing surface with no score attached to it.
+- **Sounds that get confused** (`/gurmukhi/sounds`) — ਤ against ਟ, ਰ against ੜ, and the
+  rest of the contrasts English does not make.
+- **Reading trainer** (`/gurmukhi/reading`) — five levels from a single letter to a whole
+  sentence, in sessions of twelve drawn from whatever the learner knows least.
+
+The reading trainer's 200-odd items are **generated from the letter, vowel, word and
+sentence data** rather than written separately, so a correction to a word fixes it
+everywhere at once and no prompt can drift out of step with what the course teaches.
+Everything it asks about has been taught somewhere else in the app.
+
 ## How it is put together
 
 | Directory | What lives there |

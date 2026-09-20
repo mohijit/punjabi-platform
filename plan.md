@@ -168,26 +168,42 @@ numbers change correctly; clear storage and confirm a clean first-run state.
 
 ## Milestone 3 — Gurmukhi course UI
 
-- [ ] `/gurmukhi` overview: Script intro · Letters · Vowels · Symbols · Reading trainer,
-      each with its own progress.
-- [ ] **Stage 1 — Understanding the script**: short visual explainers — what Gurmukhi is,
-      language vs writing system, left-to-right, word structure, consonants vs vowel
-      signs vs independent vowels. Concise, no walls of text.
-- [ ] `LetterCard`: huge letter, name, approximate sound, example word (Gurmukhi + roman
-      + English), 🔊 letter and 🔊 word buttons.
-- [ ] `StrokeAnimation` — animate the SVG stroke paths; `TraceCanvas` — pointer/touch
-      tracing over a faded guide with a simple accuracy check.
-- [ ] Letters are introduced **in small groups**, never as a 41-cell wall.
-- [ ] Sound-group screens with "Which sound did you hear? ਕ / ਖ" comparison drills.
-- [ ] Vowel section: the consistent ਕ-series first, then the same signs across many
-      consonants so learners generalise the rule rather than memorising shapes.
-- [ ] **Reading trainer** at `/gurmukhi/reading` — Levels 1–7 (letters → syllables →
-      simple words → longer words → sentences → short paragraphs → natural text), with a
-      **Show transliteration** toggle that defaults on early and is nudged off later.
-      Audio on every item.
+- [x] `/gurmukhi` overview: how the script works · learn the letters · confusable sounds ·
+      reading trainer, then the reference grids for letters, vowel signs and marks.
+      Per-section progress is still to come; the reading trainer carries its own.
+- [x] **Stage 1 — Understanding the script** at `/gurmukhi/script`: seven short ideas,
+      each demonstrated in real Punjabi — script versus language, the top bar, the vowel
+      already inside every consonant, where the signs hang, why a word-initial vowel needs
+      a carrier, what the small marks change, and that spelling follows sound.
+- [x] `LetterCard`: huge letter, name, sound, IPA, example word, stroke guide and the
+      writing surface. The speaker button appears only where a recording exists, which is
+      currently nowhere.
+- [x] `TraceCanvas` — pointer and touch tracing over a faded guide, themed, with Clear.
+      **No accuracy check**, deliberately: a pixel-overlap score measures covering the
+      guide rather than stroke order, which is the only part that matters. `StrokeAnimation`
+      is not built — the letter data carries a plain-language `strokeGuide`, and the
+      `strokes` SVG paths it would animate do not exist yet and cannot be invented.
+- [x] Letters are introduced **in small groups** at `/gurmukhi/letters`, one traditional
+      row at a time, each row prefaced with what its letters have in common.
+- [x] Sound-group screens at `/gurmukhi/sounds` — the contrasts, the mouth positions and a
+      real word for each letter. The "which sound did you hear" drills the plan called for
+      are **not** built: without recordings there is nothing to hear, and a synthetic voice
+      gets these exact contrasts wrong. The page says so rather than pretending.
+- [x] Vowel section: the ਕ-series on `/gurmukhi`, then level 2 of the reading trainer puts
+      the same ten signs across eight different consonants so the rule generalises.
+- [x] **Reading trainer** at `/gurmukhi/reading` — Levels 1–5 (letters → syllables →
+      simple words → words with marks → sentences), with a **Show transliteration** toggle
+      that starts on and can be switched off mid-session. Levels 6–7 (short paragraphs,
+      natural text) wait on Phase 2, because there is not yet enough vocabulary behind
+      them to write a paragraph a beginner can actually read. Items are generated from the
+      existing letter, vowel, word and sentence data rather than written again, so every
+      prompt is content taught elsewhere in the course. A session is twelve items drawn
+      from what the learner knows least. No audio on items: recordings only, and there are
+      none yet.
 
 **Verify:** walk levels 1–5; tracing works with mouse and touch; transliteration toggle
-persists; every letter and word plays audio.
+persists. Audio is not part of this verification — there are no recordings yet, and the
+speaker buttons correctly do not render.
 
 ---
 
