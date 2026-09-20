@@ -1,5 +1,8 @@
 # Deploying to punjabi.mohijitsingh.com
 
+**This is already done.** The site is live at `punjabi-platform.pages.dev` and the custom
+domain is attached. What follows is how it was set up and how to repeat it.
+
 The app is a static site — no server, no database, no environment variables. `next build`
 writes plain HTML, CSS and JS into `out/`, and Cloudflare Pages serves that directory.
 
@@ -10,16 +13,13 @@ writes plain HTML, CSS and JS into `out/`, and Cloudflare Pages serves that dire
 This project therefore uses **`punjabi-platform`**, which is free and matches the
 repository name.
 
-That means the existing Wix record has to be repointed — it currently sends the subdomain
-to a stranger's site:
+The Wix record was repointed accordingly and now reads:
 
-| | Current (wrong) | Correct |
+| Type | Host | Points to |
 |---|---|---|
-| Type | CNAME | CNAME |
-| Host | `punjabi` | `punjabi` |
-| Points to | `punjabi.pages.dev` | `punjabi-platform.pages.dev` |
+| CNAME | `punjabi` | `punjabi-platform.pages.dev` |
 
-Do that in Wix → Domains → mohijitsingh.com → DNS Records → edit the `punjabi` record.
+It lives in Wix → Domains → mohijitsingh.com → DNS Records.
 
 Nothing else at Wix changes. The apex `mohijitsingh.com` keeps pointing at GitHub Pages
 (`185.199.108–111.153`) and is unaffected.
@@ -39,13 +39,23 @@ Use `--private` if you prefer; Cloudflare Pages works with either.
 
 ## 2. Create the Pages project and deploy
 
-Either from the command line:
-
 ```bash
 npx wrangler login                    # one-time browser sign-in
-npx wrangler pages project create punjabi-platform --production-branch main
 npm run deploy                        # builds, then uploads out/
 ```
+
+**Do not run `wrangler pages project create` in this directory.** Wrangler 4.135 delegates
+that command to Workers, detects Next.js, and starts an OpenNext migration that installs
+packages and rewrites `package.json` to `opennextjs-cloudflare build && deploy`. That is the
+server-rendered path; this site is a static export and does not need it. Create the project
+through the API instead, which does exactly one thing:
+
+```bash
+TOKEN=$(grep -m1 '^oauth_token' "$APPDATA/xdg.config/.wrangler/config/default.toml"   | sed 's/.*=[ ]*"//; s/"[ ]*$//')
+curl -X POST "https://api.cloudflare.com/client/v4/accounts/$ACCOUNT_ID/pages/projects"   -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json"   -d '{"name":"punjabi-platform","production_branch":"main"}'
+```
+
+Account ID: `6fa7e474bf7421e6f3ba244f845e7b51`.
 
 …or in the dashboard: **Workers & Pages** → **Create** → **Pages** → **Connect to Git**,
 pick the repository, and set:
@@ -68,8 +78,14 @@ CLI instead, use the GitHub Actions workflow below so pushes still publish.
 
 First make sure the Wix CNAME points at `punjabi-platform.pages.dev` (see above), then:
 Pages project → **Custom domains** → **Set up a custom domain** →
-`punjabi.mohijitsingh.com`. Cloudflare will note that the domain is not on its nameservers,
-see the CNAME, and issue a certificate. The domain shows **Active** when done — usually a
+`punjabi.mohijitsingh.com`, or by API:
+
+```bash
+curl -X POST ".../accounts/$ACCOUNT_ID/pages/projects/punjabi-platform/domains"   -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json"   -d '{"name":"punjabi.mohijitsingh.com"}'
+```
+
+Cloudflare notes that the domain is not on its nameservers, follows the CNAME, and issues a
+certificate. The domain shows **Active** when done — usually a
 few minutes.
 
 Verify:
@@ -87,8 +103,8 @@ push to `main`, and publishes only if all three pass. It needs two repository se
 
 | Secret | Where to get it |
 |---|---|
-| `CLOUDFLARE_API_TOKEN` | Cloudflare → My Profile → API Tokens → Create Token → **Edit Cloudflare Workers** template (Pages uses the same permission) |
-| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare dashboard → Workers & Pages → the Account ID in the right-hand sidebar |
+| `CLOUDFLARE_API_TOKEN` | **Still to add.** Cloudflare → My Profile → API Tokens → Create Token → **Edit Cloudflare Workers** template (Pages uses the same permission). A `wrangler login` OAuth token cannot mint this — the dashboard is the only way. |
+| `CLOUDFLARE_ACCOUNT_ID` | Already set to `6fa7e474bf7421e6f3ba244f845e7b51`. |
 
 If you connected the project to Git in step 2, Cloudflare builds on push by itself and this
 workflow is redundant — delete it, or keep it and disable the dashboard's build integration,
