@@ -214,13 +214,13 @@ persists; every letter and word plays audio.
       answers only set the recommended starting lesson — never restrict access.
       Heritage-speaker answers ("can speak but can't read") point at the Gurmukhi track;
       the dedicated heritage pathway is Phase 3.
-- [ ] **Homepage**: `ਸਤ ਸ੍ਰੀ ਅਕਾਲ` · Continue learning (current lesson) · Today's review
+- [x] **Homepage**: `ਸਤ ਸ੍ਰੀ ਅਕਾਲ` · Continue learning (current lesson) · Today's review
       · Gurmukhi % / Punjabi % / Words learned. Nothing more.
-- [ ] `/progress`: letters mastered, vowels mastered, words learned, sentences completed,
+- [x] `/progress`: letters mastered, vowels mastered, words learned, sentences completed,
       listening accuracy, lessons completed, course %. No streaks.
 - [ ] Basic `/practice` hub wired to what exists (Quick review, Gurmukhi, Vocabulary,
       Listening, Weak words, 5-minute session) — deeper modes land in Phase 2.
-- [ ] Minimal `/grammar` and `/dictionary` entry points so navigation is never dead:
+- [x] Minimal `/grammar` and `/dictionary` entry points so navigation is never dead:
       grammar shows the Phase-2 topic list with ਹੋਣਾ, pronouns and SOV order written now;
       dictionary searches the existing vocabulary by Gurmukhi, roman and English.
 
