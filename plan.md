@@ -22,7 +22,7 @@ readable Gurmukhi, light + dark mode, mobile responsive.
 | Decision | Choice |
 |---|---|
 | Stack | Next.js (App Router) + TypeScript + Tailwind CSS |
-| Audio | Web Speech API `pa-IN` at runtime, behind an audio service; every data entry keeps an `audio` field so recordings can drop in later |
+| Audio | **Recordings only.** The speech-synthesis fallback was removed: the available `pa-IN`/`hi-IN` voices mispronounce Punjabi badly enough to teach a beginner the wrong sounds. Every data entry keeps an `audio` field, so real recordings drop in without touching a component |
 | Persistence | Local-first (localStorage/IndexedDB) behind a storage interface, no accounts, JSON export/import |
 | Scope of this build | **Phase 1, fully polished.** Phases 2–4 are planned milestones, not built now |
 
@@ -69,7 +69,7 @@ Learner/
     sentences.ts               ← word-segmented sentences for the explorer
     index.ts                   ← validated registry + lookup helpers
   lib/
-    audio/                     ← speak(), voice detection, playback-rate control
+    audio/                     ← play() a recording, playback-rate control
     storage/                   ← StorageAdapter interface + LocalStorageAdapter
     progress/                  ← progress model, mastery tracking, derived stats
     srs/                       ← scheduler (used fully in Phase 2, state captured now)
@@ -96,12 +96,12 @@ Learner/
       Dictionary · Progress. Collapses to a bottom bar on mobile. Nothing else.
 - [x] `lib/storage/`: `StorageAdapter` interface + localStorage implementation,
       versioned keys, safe JSON parse, SSR-guarded, plus export/import.
-- [x] `lib/audio/`: `speak(text, {rate})` using `speechSynthesis` with a `pa-IN` voice;
-      detect missing voice once and surface a single unobtrusive notice; honour
-      0.75× / 1× / 1.25×; prefer an `audio` file URL when a data entry has one.
+- [x] `lib/audio/`: `play({audio, rate})` for a recording; honour 0.75× / 1× / 1.25×.
+      Speech synthesis was built, judged disrespectful to the language, and removed —
+      there is a recording or there is nothing, and the UI degrades quietly either way.
 
 **Verify:** `npm run dev` renders the shell; theme toggle persists; Gurmukhi renders
-correctly at large sizes; `speak('ਪਾਣੀ')` produces sound on this machine.
+correctly at large sizes; entries without a recording show no speaker button at all.
 
 ---
 
@@ -236,7 +236,7 @@ homepage and progress reflect it; search "water", "paani" and "ਪਾਣੀ" all
 - [ ] Dark mode audit on every screen; contrast checked; Gurmukhi legible in both themes.
 - [ ] Keyboard navigation and screen-reader labels through a full lesson; motion kept
       minimal and `prefers-reduced-motion` respected.
-- [ ] Empty, loading and error states; graceful message when no `pa-IN` voice exists.
+- [ ] Empty, loading and error states; silence handled by hiding controls, not apologising.
 - [ ] `README.md` (run, build, architecture) and `content/CONTRIBUTING.md` explaining how
       to correct a Punjabi entry — the brief's "mistakes must be easy to fix" requirement.
 - [ ] Final content review pass over all Gurmukhi strings actually shipped.
@@ -251,7 +251,7 @@ narrow viewport in dark mode.
 - **Phase 2** — full SRS scheduler with mixed card types, complete dictionary + related
   words, full grammar course (pronouns, gender, plurals, postpositions, verb tenses,
   ਹੋਣਾ, questions, negation, ਤੂੰ vs ਤੁਸੀਂ), reading-trainer levels 6–7, vocabulary
-  expansion to 1,000–2,000, recorded audio replacing TTS.
+  expansion to 1,000–2,000, recorded audio for every entry.
 - **Phase 3** — listening course levels 1–5, typing trainer with speed/accuracy stats,
   pronunciation section with minimal pairs and tongue-placement notes, reading library
   with narration, heritage-speaker pathway, cultural lessons, formal vs spoken Punjabi.
@@ -265,6 +265,6 @@ narrow viewport in dark mode.
 | Risk | Mitigation |
 |---|---|
 | Inaccurate Punjabi content | Zod-validated data files, a dedicated accuracy pass per milestone, `SOURCES.md`, flagged-entry field, and content isolated from code so fixes are one-line |
-| `pa-IN` TTS voice missing or poor | Audio behind a service; every entry keeps an `audio` URL field; single clear fallback notice; recorded files drop in without component changes |
+| TTS mispronounces Punjabi | Resolved by removing it. Audio stays behind a service and every entry keeps an `audio` URL field, so recorded files drop in without component changes; until then nothing plays and nothing pretends to |
 | Breadth over polish | Phase 1 only; the first ~20 lessons are finished properly before any Phase 2 feature starts |
 | UI creeping toward clutter | Nav fixed at 7 items; homepage capped at three blocks; no streaks, badges or mascots |

@@ -1,6 +1,7 @@
 "use client";
 
 import { AudioButton } from "@/components/ui/AudioButton";
+import { hasRecording } from "@/lib/audio";
 import { Button } from "@/components/ui/Button";
 import { Punjabi } from "@/components/word/Punjabi";
 import { Prompt } from "./Prompt";
@@ -10,15 +11,19 @@ import type { Exercise } from "@/content/schema";
 type ReadAloud = Extract<Exercise, { type: "read-aloud" }>;
 
 /**
- * Say it out loud, then hear it and mark yourself.
+ * Say it out loud and mark yourself.
  *
  * There is no microphone here, and the app does not pretend otherwise: speech
  * recognition is Phase 4, and a made-up score would teach a learner to trust a
  * number that means nothing. Because it is self-marked, this exercise never
  * counts towards a lesson accuracy figure.
+ *
+ * Where a recording exists the learner can compare against it. Where none does
+ * the romanisation is what they read from, and the exercise says as much.
  */
 export function ReadAloudExercise({ exercise, result, onSubmit }: ExerciseProps<ReadAloud>) {
   const answered = result !== null;
+  const recorded = hasRecording(exercise.audio);
 
   return (
     <div className="space-y-6">
@@ -37,11 +42,12 @@ export function ReadAloudExercise({ exercise, result, onSubmit }: ExerciseProps<
       {!answered ? (
         <div className="space-y-3">
           <p className="text-center text-text-muted">
-            Read it aloud, then listen and compare.
+            {recorded
+              ? "Read it aloud, then listen and compare."
+              : "Read it aloud from the romanisation, at your own pace."}
           </p>
           <div className="flex justify-center">
             <AudioButton
-              text={exercise.text}
               audio={exercise.audio}
               size="lg"
               label={exercise.roman}

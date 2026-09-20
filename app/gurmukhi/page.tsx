@@ -72,7 +72,7 @@ export default function GurmukhiPage() {
                   <span className="ml-2 text-text-muted">{vowel.example.english}</span>
                 </p>
               </div>
-              <AudioButton text={vowel.onKakka} audio={vowel.audio} label={vowel.name} />
+              <AudioButton audio={vowel.audio} label={vowel.name} />
             </div>
           ))}
         </div>

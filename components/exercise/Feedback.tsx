@@ -57,7 +57,7 @@ export function Feedback({
               <span className="pa-md" lang="pa">
                 {result.correctAnswer}
               </span>
-              <AudioButton text={result.correctAnswer} size="sm" label={result.correctAnswer} />
+              <AudioButton size="sm" label={result.correctAnswer} />
             </>
           ) : (
             <span className="font-medium">{result.correctAnswer}</span>

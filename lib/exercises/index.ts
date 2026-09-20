@@ -15,6 +15,7 @@
  *    itself, so it is stable but not the order the content author wrote.
  */
 
+import { hasRecording } from "@/lib/audio";
 import type { Exercise } from "@/content/schema";
 
 /** What the learner submitted. Build exercises answer with an ordered list. */
@@ -154,4 +155,16 @@ export function isListening(exercise: Exercise): boolean {
  */
 export function isScored(exercise: Exercise): boolean {
   return exercise.type !== "read-aloud";
+}
+
+/**
+ * True when this exercise can actually be answered on the device in front of
+ * the learner.
+ *
+ * Only listening fails this, and only while its recording is missing. Asking
+ * someone which word they heard, in silence, is not a question — so the lesson
+ * player drops these rather than showing them.
+ */
+export function isPlayable(exercise: Exercise): boolean {
+  return exercise.type !== "listening" || hasRecording(exercise.audio);
 }

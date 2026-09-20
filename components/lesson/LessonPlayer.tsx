@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
 import { StepRenderer, advancesItself } from "./StepRenderer";
@@ -12,6 +12,7 @@ import {
   setCurrentLesson,
   useProgress,
 } from "@/lib/progress";
+import { playableSteps } from "@/lib/lessons";
 import type { Lesson } from "@/content/schema";
 
 /**
@@ -26,6 +27,9 @@ import type { Lesson } from "@/content/schema";
  * new file in `content/lessons/` and never a change here.
  */
 export function LessonPlayer({ lesson }: { lesson: Lesson }) {
+  // Listening steps with no recording behind them are dropped, so the lesson
+  // is however long it can actually be taught today.
+  const steps = useMemo(() => playableSteps(lesson), [lesson]);
   const [index, setIndex] = useState(0);
   /** Set once the lesson is finished; also the summary shown on the last screen. */
   const [summary, setSummary] = useState<{ scored: number; correct: number } | null>(null);
@@ -48,14 +52,14 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
   // the right one, so the saved position becomes a one-line prompt instead.
   const saved = useProgress().lessons[lesson.id];
   const savedStep =
-    saved && !saved.completed && saved.stepIndex > 0 && saved.stepIndex < lesson.steps.length
+    saved && !saved.completed && saved.stepIndex > 0 && saved.stepIndex < steps.length
       ? saved.stepIndex
       : null;
   const offerResume =
     savedStep !== null && index === 0 && !dismissedResume && summary === null;
 
-  const step = lesson.steps[index];
-  const isLast = index === lesson.steps.length - 1;
+  const step = steps[index];
+  const isLast = index === steps.length - 1;
 
   const advance = useCallback(() => {
     movedRef.current = true;
@@ -141,20 +145,20 @@ export function LessonPlayer({ lesson }: { lesson: Lesson }) {
           </Link>
           <span className="truncate text-text-faint">{lesson.title}</span>
           <span className="tabular-nums text-text-faint">
-            {index + 1}/{lesson.steps.length}
+            {index + 1}/{steps.length}
           </span>
         </div>
         <div
           className="h-1 w-full overflow-hidden rounded-full bg-surface-2"
           role="progressbar"
           aria-valuemin={0}
-          aria-valuemax={lesson.steps.length}
+          aria-valuemax={steps.length}
           aria-valuenow={index + 1}
           aria-label="Lesson progress"
         >
           <div
             className="h-full rounded-full bg-accent transition-[width] duration-300"
-            style={{ width: ((index + 1) / lesson.steps.length) * 100 + "%" }}
+            style={{ width: ((index + 1) / steps.length) * 100 + "%" }}
           />
         </div>
         {offerResume ? (

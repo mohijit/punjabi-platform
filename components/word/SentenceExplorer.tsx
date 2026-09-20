@@ -58,7 +58,7 @@ export function SentenceExplorer({
             );
           })}
         </div>
-        <AudioButton text={sentence.gurmukhi} audio={sentence.audio} label={sentence.roman} />
+        <AudioButton audio={sentence.audio} label={sentence.roman} />
       </div>
 
       <p className="mt-4 text-[0.95rem]">{sentence.english}</p>

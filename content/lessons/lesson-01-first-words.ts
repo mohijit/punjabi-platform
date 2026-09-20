@@ -33,7 +33,7 @@ const raw: unknown = {
     {
       type: "vocab",
       title: "Three words to start with",
-      intro: "Tap the speaker on each one and say it back before moving on.",
+      intro: "Read each one aloud from the romanisation before moving on.",
       words: ["ਸਤ ਸ੍ਰੀ ਅਕਾਲ", "ਧੰਨਵਾਦ", "ਜੀ"],
     },
     {

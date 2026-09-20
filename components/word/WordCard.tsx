@@ -24,7 +24,7 @@ export function WordCard({ word }: { word: Word }) {
           <p className="mt-1">{word.english}</p>
         </div>
         <div className="flex shrink-0 items-center gap-1">
-          <AudioButton text={word.gurmukhi} audio={word.audio} label={word.roman} />
+          <AudioButton audio={word.audio} label={word.roman} />
           <button
             type="button"
             onClick={() => toggleSavedWord(word.gurmukhi)}

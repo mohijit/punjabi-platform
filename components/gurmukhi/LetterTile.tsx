@@ -13,7 +13,7 @@ export function LetterTile({ letter }: { letter: Letter }) {
         <span className="pa-lg leading-none" lang="pa">
           {letter.letter}
         </span>
-        <AudioButton text={letter.letter} audio={letter.audio} label={letter.name} />
+        <AudioButton audio={letter.audio} label={letter.name} />
       </div>
       <p className="mt-3 font-medium">{letter.name}</p>
       <p className="text-sm text-text-muted">{letter.sound}</p>

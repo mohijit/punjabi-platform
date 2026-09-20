@@ -48,7 +48,7 @@ export function BlankExercise({ exercise, given, result, onSubmit }: ExercisePro
           )}
         </p>
         <p className="text-sm text-text-muted">{exercise.english}</p>
-        {answered && filled ? <AudioButton text={filled} size="sm" label="the sentence" /> : null}
+        {answered && filled ? <AudioButton size="sm" label="the sentence" /> : null}
       </div>
 
       <div className="grid gap-2.5 sm:grid-cols-2">

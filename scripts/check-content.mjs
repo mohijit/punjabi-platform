@@ -18,6 +18,8 @@ import { toRoman } from "@/lib/transliteration";
 
 const problems = [];
 const warnings = [];
+/** Listening exercises with no recording — hidden from lessons, not errors. */
+const silentListening = [];
 
 function problem(message) {
   problems.push(message);
@@ -168,6 +170,12 @@ function checkExercise(label, exercise) {
   if (exercise.type === "listening" && !exercise.options.includes(exercise.say)) {
     problem(`${label}: the spoken word is not among the options`);
   }
+  // Listening needs a recording. There is no speech synthesis to fall back on:
+  // a synthetic voice mispronounces Gurmukhi, so these steps are hidden from
+  // the lesson until a real recording exists.
+  if (exercise.type === "listening" && !exercise.audio) {
+    silentListening.push(label);
+  }
   if (exercise.type === "build") {
     const overlap = exercise.distractors.filter((token) =>
       exercise.answerTokens.includes(token),
@@ -271,6 +279,22 @@ console.log(`sound groups   ${soundGroups.length}`);
 console.log(`words          ${words.length}`);
 console.log(`sentences      ${sentences.length}`);
 console.log(`lessons        ${lessons.length}`);
+
+const recorded = [
+  ...letters.map((l) => l.audio),
+  ...vowels.map((v) => v.audio),
+  ...words.map((w) => w.audio),
+  ...sentences.map((s) => s.audio),
+].filter(Boolean).length;
+console.log(`recordings     ${recorded}  (entries with an audio file)`);
+
+if (silentListening.length > 0) {
+  console.log(
+    `
+${silentListening.length} listening exercise(s) hidden until recorded:`,
+  );
+  for (const label of silentListening) console.log("  - " + label);
+}
 
 if (warnings.length > 0) {
   console.log(`\n${warnings.length} romanisation differences to eyeball:`);

@@ -37,9 +37,16 @@ Two rules hold the thing together:
 Learner data — progress, settings, saved words — is local-first. It lives in the browser's
 own storage behind a `StorageAdapter`; there are no accounts and no server.
 
-Audio uses the Web Speech API with a `pa-IN` voice. Every content entry also carries an
-`audio` field, so recorded pronunciation can replace the synthesised voice later without
-touching a single component.
+Punjabi audio plays from recordings only. There was a speech-synthesis fallback, reading
+Gurmukhi through whatever `pa-IN` (or `hi-IN`) voice the device happened to ship; it
+flattened the aspirates, missed the retroflexes and put the tone in the wrong place, so it
+was removed rather than tuned. A beginner with no reference would have learned the wrong
+pronunciation from the first lesson.
+
+Every content entry keeps its `audio` field, so a recording drops in without touching a
+component: `AudioButton` renders nothing until one exists, and a listening exercise with no
+recording behind it is filtered out of the lesson rather than played in silence.
+`npm run check` reports how many entries have recordings and which exercises are hidden.
 
 ## Correcting the Punjabi
 

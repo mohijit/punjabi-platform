@@ -80,7 +80,7 @@ export function PracticeScreen() {
                       <p className="text-sm text-text-muted">{item.english}</p>
                     ) : null}
                   </div>
-                  <AudioButton text={item.gurmukhi} label={item.roman || item.gurmukhi} />
+                  <AudioButton label={item.roman || item.gurmukhi} />
                 </div>
               );
             })}

@@ -1,68 +1,53 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { onVoicesReady, speak, voiceStatus, type VoiceStatus } from "@/lib/audio";
+import { useState } from "react";
+import { hasRecording, play } from "@/lib/audio";
 import { useSettings } from "@/lib/settings";
 
-/** Shared across every audio button so one voice check serves the whole app. */
-export function useVoiceStatus(): VoiceStatus {
-  const [status, setStatus] = useState<VoiceStatus>("unknown");
-  useEffect(() => onVoicesReady(() => setStatus(voiceStatus())), []);
-  return status;
-}
-
+/**
+ * The play button for a recording.
+ *
+ * With no recording for this entry it renders nothing at all — not a greyed
+ * out speaker, not a tooltip apologising. A disabled control on every card
+ * would be its own kind of noise, and the absence is temporary: the button
+ * appears by itself the moment a file is added to the entry.
+ */
 export function AudioButton({
-  text,
   audio,
   label,
   size = "md",
 }: {
-  text: string;
+  /** The recording's URL. No recording, no button. */
   audio?: string;
-  /** What is being read aloud, for screen readers. */
+  /** What is being played, for screen readers. */
   label?: string;
   size?: "sm" | "md" | "lg";
 }) {
   const { playbackRate } = useSettings();
-  const status = useVoiceStatus();
   const [playing, setPlaying] = useState(false);
 
-  const unavailable = status === "unsupported" || (status === "missing" && !audio);
+  if (!hasRecording(audio)) return null;
 
-  const dimensions = {
-    sm: "h-8 w-8",
-    md: "h-10 w-10",
-    lg: "h-14 w-14",
-  }[size];
-
+  const dimensions = { sm: "h-8 w-8", md: "h-10 w-10", lg: "h-14 w-14" }[size];
   const iconSize = { sm: 14, md: 17, lg: 24 }[size];
 
-  async function play() {
-    if (unavailable) return;
+  async function onClick() {
     setPlaying(true);
-    await speak(text, { audio, rate: playbackRate });
+    await play({ audio, rate: playbackRate });
     setPlaying(false);
   }
 
   return (
     <button
       type="button"
-      onClick={play}
-      disabled={unavailable}
-      aria-label={
-        unavailable
-          ? "Audio unavailable on this device"
-          : "Play audio" + (label ? ": " + label : "")
-      }
-      title={unavailable ? "No Punjabi voice available on this device" : undefined}
+      onClick={onClick}
+      aria-label={"Play audio" + (label ? ": " + label : "")}
       className={[
         dimensions,
         "inline-flex shrink-0 items-center justify-center rounded-full border transition-colors",
-        unavailable
-          ? "cursor-not-allowed border-border text-text-faint opacity-50"
-          : playing
-            ? "border-accent bg-accent text-accent-text"
-            : "border-border bg-surface text-text-muted hover:border-accent hover:text-accent",
+        playing
+          ? "border-accent bg-accent text-accent-text"
+          : "border-border bg-surface text-text-muted hover:border-accent hover:text-accent",
       ].join(" ")}
     >
       <svg

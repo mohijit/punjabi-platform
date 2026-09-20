@@ -38,7 +38,7 @@ export function ExplainStep({ step }: { step: Extract<LessonStep, { type: "expla
             alwaysGurmukhi
           >
             <div className="pt-2">
-              <AudioButton text={step.display} label={step.displayRoman} />
+              <AudioButton label={step.displayRoman} />
             </div>
           </Punjabi>
         </div>
@@ -84,7 +84,7 @@ export function LettersStep({ step }: { step: Extract<LessonStep, { type: "lette
                   <span className="ml-2 text-text-muted">{letter.example.english}</span>
                 </p>
               </div>
-              <AudioButton text={letter.letter} audio={letter.audio} label={letter.name} />
+              <AudioButton audio={letter.audio} label={letter.name} />
             </div>
           ) : null,
         )}
@@ -120,7 +120,7 @@ export function VocabStep({ step }: { step: Extract<LessonStep, { type: "vocab" 
                   <p className="mt-2 text-sm text-text-muted">{word.note}</p>
                 ) : null}
               </div>
-              <AudioButton text={word.gurmukhi} audio={word.audio} label={word.roman} />
+              <AudioButton audio={word.audio} label={word.roman} />
             </div>
           ) : null,
         )}

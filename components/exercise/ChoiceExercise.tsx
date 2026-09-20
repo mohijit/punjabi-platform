@@ -39,7 +39,7 @@ export function ChoiceExercise({
               <p className="pa-hero" lang="pa">
                 {exercise.subject}
               </p>
-              <AudioButton text={exercise.subject} label={exercise.subject} />
+              <AudioButton label={exercise.subject} />
             </>
           ) : (
             <p className="text-2xl font-medium sm:text-3xl">{exercise.subject}</p>

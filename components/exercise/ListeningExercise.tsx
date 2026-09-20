@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { AudioButton, useVoiceStatus } from "@/components/ui/AudioButton";
+import { AudioButton } from "@/components/ui/AudioButton";
 import { OptionButton, type OptionState } from "./OptionButton";
 import { Prompt } from "./Prompt";
 import { optionsOf, normaliseAnswer } from "@/lib/exercises";
-import { speak } from "@/lib/audio";
+import { hasRecording, play } from "@/lib/audio";
 import { useSettings } from "@/lib/settings";
 import type { ExerciseProps } from "./types";
 import type { Exercise } from "@/content/schema";
@@ -14,9 +14,12 @@ type Listening = Extract<Exercise, { type: "listening" }>;
 
 /**
  * "Which word did you hear?" The Punjabi is never shown until the answer is
- * in — otherwise the learner reads instead of listening. If the device has no
- * Punjabi voice the exercise says so and reveals the text, rather than asking
- * someone to identify silence.
+ * in — otherwise the learner reads instead of listening.
+ *
+ * This exercise needs a recording. The lesson player filters out the ones that
+ * have none, so in practice the fallback below is never reached; it exists so
+ * that a missing file degrades into an honest message rather than a silent
+ * question no one can answer.
  */
 export function ListeningExercise({
   exercise,
@@ -27,18 +30,17 @@ export function ListeningExercise({
   const options = optionsOf(exercise);
   const answered = result !== null;
   const { playbackRate } = useSettings();
-  const status = useVoiceStatus();
   const playedFor = useRef<string | null>(null);
 
-  const silent = status === "unsupported" || (status === "missing" && !exercise.audio);
+  const silent = !hasRecording(exercise.audio);
 
   // Play once when the exercise appears, so the learner is not left tapping.
   useEffect(() => {
-    if (silent || status === "unknown") return;
+    if (silent) return;
     if (playedFor.current === exercise.say) return;
     playedFor.current = exercise.say;
-    void speak(exercise.say, { audio: exercise.audio, rate: playbackRate });
-  }, [exercise.say, exercise.audio, playbackRate, silent, status]);
+    void play({ audio: exercise.audio, rate: playbackRate });
+  }, [exercise.say, exercise.audio, playbackRate, silent]);
 
   function stateOf(option: string): OptionState {
     if (!answered) return "idle";
@@ -60,12 +62,12 @@ export function ListeningExercise({
               {exercise.say}
             </p>
             <p className="text-sm text-text-muted">
-              No Punjabi voice on this device, so the word is shown instead.
+              There is no recording of this word yet, so it is shown instead.
             </p>
           </>
         ) : (
           <>
-            <AudioButton text={exercise.say} audio={exercise.audio} size="lg" label="the word" />
+            <AudioButton audio={exercise.audio} size="lg" label="the word" />
             <p className="text-sm text-text-muted">Tap to hear it again</p>
           </>
         )}
