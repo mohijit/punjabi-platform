@@ -3,15 +3,30 @@
 The app is a static site — no server, no database, no environment variables. `next build`
 writes plain HTML, CSS and JS into `out/`, and Cloudflare Pages serves that directory.
 
-**The Cloudflare Pages project must be named `punjabi`.** DNS for the subdomain is already
-in place at Wix as a CNAME:
+## The project name
 
-```
-punjabi.mohijitsingh.com  CNAME  punjabi.pages.dev
-```
+`*.pages.dev` hostnames are globally unique across all Cloudflare accounts, and
+**`punjabi.pages.dev` is already taken** by an unrelated site (a "Dictionary Search" app).
+This project therefore uses **`punjabi-platform`**, which is free and matches the
+repository name.
 
-A project with any other name gets a different `*.pages.dev` hostname and that record will
-not resolve to it.
+That means the existing Wix record has to be repointed — it currently sends the subdomain
+to a stranger's site:
+
+| | Current (wrong) | Correct |
+|---|---|---|
+| Type | CNAME | CNAME |
+| Host | `punjabi` | `punjabi` |
+| Points to | `punjabi.pages.dev` | `punjabi-platform.pages.dev` |
+
+Do that in Wix → Domains → mohijitsingh.com → DNS Records → edit the `punjabi` record.
+
+Nothing else at Wix changes. The apex `mohijitsingh.com` keeps pointing at GitHub Pages
+(`185.199.108–111.153`) and is unaffected.
+
+If you would rather have a different name, any unclaimed one works — check availability
+with `nslookup <name>.pages.dev 8.8.8.8` (an NXDOMAIN means it is free) and update the
+CNAME, `package.json`'s `deploy` script and `.github/workflows/deploy.yml` to match.
 
 ## 1. Push the repository
 
@@ -28,7 +43,7 @@ Either from the command line:
 
 ```bash
 npx wrangler login                    # one-time browser sign-in
-npx wrangler pages project create punjabi --production-branch main
+npx wrangler pages project create punjabi-platform --production-branch main
 npm run deploy                        # builds, then uploads out/
 ```
 
@@ -37,7 +52,7 @@ pick the repository, and set:
 
 | Setting | Value |
 |---|---|
-| Project name | `punjabi` |
+| Project name | `punjabi-platform` |
 | Framework preset | Next.js (Static HTML Export) |
 | Build command | `npm run build` |
 | Build output directory | `out` |
@@ -51,13 +66,11 @@ CLI instead, use the GitHub Actions workflow below so pushes still publish.
 
 ## 3. Attach the domain
 
+First make sure the Wix CNAME points at `punjabi-platform.pages.dev` (see above), then:
 Pages project → **Custom domains** → **Set up a custom domain** →
 `punjabi.mohijitsingh.com`. Cloudflare will note that the domain is not on its nameservers,
-see the existing CNAME, and issue a certificate. The domain shows **Active** when done —
-usually a few minutes.
-
-Nothing further is needed at Wix. The apex `mohijitsingh.com` keeps pointing at GitHub
-Pages (`185.199.108–111.153`) and is unaffected.
+see the CNAME, and issue a certificate. The domain shows **Active** when done — usually a
+few minutes.
 
 Verify:
 
