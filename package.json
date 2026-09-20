@@ -11,7 +11,8 @@
     "check:transliteration": "node --experimental-strip-types --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/ts-resolve.mjs scripts/check-transliteration.mjs",
     "check:content": "node --experimental-strip-types --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/ts-resolve.mjs scripts/check-content.mjs",
     "check": "npm run typecheck && npm run check:source && npm run check:transliteration && npm run check:content",
-    "check:source": "node --experimental-strip-types --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/ts-resolve.mjs scripts/check-source.mjs"
+    "check:source": "node --experimental-strip-types --disable-warning=ExperimentalWarning --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/ts-resolve.mjs scripts/check-source.mjs",
+    "deploy": "npm run build && npx --yes wrangler@4 pages deploy out --project-name=punjabi"
   },
   "dependencies": {
     "next": "16.3.5",
